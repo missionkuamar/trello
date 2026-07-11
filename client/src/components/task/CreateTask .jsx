@@ -1,0 +1,296 @@
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { createTask } from '../../redux/slices/taskSlice';
+import { getAllUsers } from '../../redux/slices/authSlice';
+import Loading from '../common/Loading';
+import toast from 'react-hot-toast';
+
+export default function CreateTask() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { users } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.tasks);
+  const { user } = useSelector((state) => state.auth);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    assignedTo: '',
+    dueDate: '',
+    priority: 'medium',
+    status: 'todo',
+    category: 'personal',
+  });
+  const [errors, setErrors] = useState({});
+
+  // ✅ Check if current user is admin
+  const isAdmin = user?.role === 'admin';
+
+  // ✅ Filter users - Admin sees all, others see only regular users
+  const filteredUsers = isAdmin 
+    ? users || [] 
+    : users?.filter((u) => u.role === 'user') || [];
+
+  useEffect(() => {
+    dispatch(getAllUsers({ limit: 100 }));
+    // ✅ Auto-assign to current user if they are a regular user
+    if (user && user.role === 'user') {
+      setFormData(prev => ({
+        ...prev,
+        assignedTo: user.id,
+      }));
+    }
+  }, [dispatch, user]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: '',
+      });
+    }
+  };
+
+  const handleUserSelect = (e) => {
+    const userId = e.target.value;
+    setFormData({
+      ...formData,
+      assignedTo: userId,
+    });
+    if (errors.assignedTo) {
+      setErrors({
+        ...errors,
+        assignedTo: '',
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = 'Title is required';
+    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    if (!formData.dueDate) newErrors.dueDate = 'Due date is required';
+    if (!formData.assignedTo) newErrors.assignedTo = 'Please assign a user';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      toast.error('Please fix all errors');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const result = await dispatch(createTask(formData)).unwrap();
+      if (result.success) {
+        toast.success('Task created successfully!');
+        navigate('/tasks');
+      }
+    } catch (error) {
+      console.error('Create task error:', error);
+      toast.error(error.message || 'Failed to create task');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (isLoading) return <Loading />;
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="flex items-center gap-3 mb-6">
+        <button onClick={() => navigate('/tasks')} className="text-gray-500 hover:text-gray-700">
+          ← Back
+        </button>
+        <h1 className="text-2xl font-bold">Create New Task</h1>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter task title..."
+              className={`mt-1 block w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${
+                errors.title ? 'border-red-500' : 'border-gray-300'
+              }`}
+            />
+            {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Description <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={4}
+              placeholder="Enter task description..."
+              className={`mt-1 block w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${
+                errors.description ? 'border-red-500' : 'border-gray-300'
+              }`}
+            />
+            {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
+          </div>
+
+          {/* Assign To & Due Date */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Assign To <span className="text-red-500">*</span>
+              </label>
+              {/* ✅ Admin sees all users, others see only regular users */}
+              <select
+                value={formData.assignedTo}
+                onChange={handleUserSelect}
+                className={`mt-1 block w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${
+                  errors.assignedTo ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select a user...</option>
+                {filteredUsers.length === 0 ? (
+                  <option value="" disabled>No users available</option>
+                ) : (
+                  filteredUsers.map((u) => (
+                    <option key={u._id} value={u._id}>
+                      {u.name} ({u.email}) {u.role === 'admin' ? '⭐' : u.role === 'moderator' ? '🛠️' : ''}
+                    </option>
+                  ))
+                )}
+              </select>
+              {errors.assignedTo && <p className="mt-1 text-sm text-red-500">{errors.assignedTo}</p>}
+              {formData.assignedTo && (
+                <div className="mt-2 text-sm text-green-600">
+                  ✅ Assigned to: {users?.find(u => u._id === formData.assignedTo)?.name}
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Due Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                name="dueDate"
+                value={formData.dueDate}
+                onChange={handleChange}
+                className={`mt-1 block w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${
+                  errors.dueDate ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.dueDate && <p className="mt-1 text-sm text-red-500">{errors.dueDate}</p>}
+            </div>
+          </div>
+
+          {/* Priority & Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Priority</label>
+              <select
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="low">🟢 Low</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="high">🟠 High</option>
+                <option value="urgent">🔴 Urgent</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="todo">📋 To Do</option>
+                <option value="in-progress">🔄 In Progress</option>
+                <option value="review">👀 Review</option>
+                <option value="done">✅ Done</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Category</label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="personal">👤 Personal</option>
+              <option value="work">💼 Work</option>
+              <option value="study">📚 Study</option>
+              <option value="health">💪 Health</option>
+              <option value="other">📌 Other</option>
+            </select>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-4 pt-4 border-t border-gray-200">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-1 bg-primary-600 text-white py-2.5 px-4 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {submitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating...
+                </>
+              ) : (
+                'Create Task'
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/tasks')}
+              className="flex-1 bg-gray-200 text-gray-700 py-2.5 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h4 className="text-sm font-medium text-blue-800">💡 Tips</h4>
+        <ul className="mt-2 text-sm text-blue-700 space-y-1">
+          <li>• Be specific with task titles</li>
+          <li>• Add detailed descriptions for clarity</li>
+          <li>• Set realistic due dates</li>
+          <li>• Assign tasks to the right people</li>
+          <li>• Use priority levels to indicate urgency</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
