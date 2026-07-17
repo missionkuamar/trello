@@ -27,10 +27,29 @@ export default function CreateTask() {
   // ✅ Check if current user is admin
   const isAdmin = user?.role === 'admin';
 
+  
+const currentUserRole = user?.role; // auth user
+
+
   // ✅ Filter users - Admin sees all, others see only regular users
-  const filteredUsers = isAdmin 
-    ? users || [] 
-    : users?.filter((u) => u.role === 'user') || [];
+const filteredUsers = users?.filter((u) => {
+  switch (currentUserRole) {
+    case "admin":
+      // Admin sabko assign kar sakta hai
+      return true;
+
+    case "moderator":
+      // Moderator sirf moderator aur user ko
+      return u.role === "moderator" || u.role === "user";
+
+    case "user":
+      // User sirf dusre users ko
+      return u.role === "user";
+
+    default:
+      return false;
+  }
+}) || [];
 
   useEffect(() => {
     dispatch(getAllUsers({ limit: 100 }));
@@ -160,6 +179,7 @@ export default function CreateTask() {
                 Assign To <span className="text-red-500">*</span>
               </label>
               {/* ✅ Admin sees all users, others see only regular users */}
+
               <select
                 value={formData.assignedTo}
                 onChange={handleUserSelect}

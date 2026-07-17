@@ -67,7 +67,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+console.log("email :", email, "password:", password);
     // Validate
     if (!email || !password) {
       return res.status(400).json({ 
@@ -307,38 +307,56 @@ export const logout = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const { search, role, page = 1, limit = 20 } = req.query;
+
     const query = {};
 
+    // 🔐 Role based filtering
+    if (req.user.role === "admin") {
+      // Admin -> All users
+    } else if (req.user.role === "moderator") {
+      query.role = { $in: ["moderator", "user"] };
+    } else if (req.user.role === "user") {
+      query.role = "user";
+    }
+
+    // Search
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
       ];
     }
-    if (role) query.role = role;
 
-    const skip = (page - 1) * limit;
+    // Optional role filter (Admin only)
+    if (role && req.user.role === "admin") {
+      query.role = role;
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
     const [users, total] = await Promise.all([
       User.find(query)
-        .select('-password')
+        .select("-password")
+        .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(Number(limit))
-        .sort({ createdAt: -1 }),
+        .limit(Number(limit)),
+
       User.countDocuments(query),
     ]);
 
-    res.json({
+    return res.status(200).json({
       success: true,
       users,
       total,
       page: Number(page),
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / Number(limit)),
     });
   } catch (error) {
-    console.error('❌ Get users error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message || 'Internal server error' 
+    console.error("❌ Get users error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal server error",
     });
   }
 };

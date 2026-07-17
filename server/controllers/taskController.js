@@ -1,5 +1,6 @@
 import Task from '../models/Task.js';
 import cloudinary from '../config/cloudinary.js';
+import User from '../models/User.js';
 
 // ✅ Get all tasks with filters
 export const getTasks = async (req, res) => {
@@ -104,22 +105,70 @@ export const getTaskById = async (req, res) => {
 };
 
 // ✅ Create task
-// ✅ Create task - FIXED
 export const createTask = async (req, res) => {
   try {
-    const { title, description, assignedTo, dueDate, priority, category, labels, board } = req.body;
+    const {
+      title,
+      description,
+      assignedTo,
+      dueDate,
+      priority,
+      category,
+      labels,
+      board,
+    } = req.body;
 
-    // Validate
+    // Validate required fields
     if (!title || !description || !assignedTo || !dueDate) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Please provide all required fields' 
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields",
       });
     }
 
-    // Get max position for the specific board or global
-    const query = board ? { status: 'todo', board } : { status: 'todo' };
-    const lastTask = await Task.findOne(query).sort({ position: -1 });
+    // ✅ Check assigned user exists
+    const assignedUser = await User.findById(assignedTo);
+
+    if (!assignedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Assigned user not found",
+      });
+    }
+
+    // ✅ Current logged-in user's role
+    const currentUserRole = req.user.role;
+
+    // ✅ Role permission check
+    if (
+      currentUserRole === "user" &&
+      assignedUser.role !== "user"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Users can only assign tasks to other users.",
+      });
+    }
+
+    if (
+      currentUserRole === "moderator" &&
+      assignedUser.role === "admin"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Moderators cannot assign tasks to admins.",
+      });
+    }
+
+    // Get max position
+    const query = board
+      ? { status: "todo", board }
+      : { status: "todo" };
+
+    const lastTask = await Task.findOne(query).sort({
+      position: -1,
+    });
+
     const position = lastTask ? lastTask.position + 1 : 0;
 
     const taskData = {
@@ -128,13 +177,12 @@ export const createTask = async (req, res) => {
       assignedTo,
       assignedBy: req.user.id,
       dueDate,
-      priority: priority || 'medium',
-      category: category || 'personal',
+      priority: priority || "medium",
+      category: category || "personal",
       labels: labels || [],
       position,
     };
 
-    // ✅ Add board if provided
     if (board) {
       taskData.board = board;
     }
@@ -142,20 +190,21 @@ export const createTask = async (req, res) => {
     const task = await Task.create(taskData);
 
     const populatedTask = await Task.findById(task._id)
-      .populate('assignedTo', 'name email avatar')
-      .populate('assignedBy', 'name email')
-      .populate('board', 'name');
+      .populate("assignedTo", "name email avatar role")
+      .populate("assignedBy", "name email role")
+      .populate("board", "name");
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: 'Task created successfully',
+      message: "Task created successfully",
       task: populatedTask,
     });
   } catch (error) {
-    console.error('❌ Create task error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message || 'Internal server error' 
+    console.error("❌ Create task error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal server error",
     });
   }
 };

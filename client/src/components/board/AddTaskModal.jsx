@@ -24,10 +24,29 @@ export default function AddTaskModal({ isOpen, onClose, onSuccess, boardId }) {
   // ✅ Check if current user is admin
   const isAdmin = user?.role === 'admin';
 
-  // ✅ Filter users - Admin sees all, others see only regular users
-  const filteredUsers = isAdmin 
-    ? users || [] 
-    : users?.filter((u) => u.role === 'user') || [];
+  
+ const filteredUsers =
+  users?.filter((u) => {
+    if (user?.role === "admin") return true;
+
+    if (user?.role === "moderator") {
+      return (
+        (u.role === "moderator" || u.role === "user") &&
+        u._id !== user._id
+      );
+    }
+
+    if (user?.role === "user") {
+      return u.role === "user" && u._id !== user._id;
+    }
+
+    return false;
+  }) || [];
+
+
+  console.log("Current User:", user);
+console.log("All Users:", users);
+console.log("Filtered Users:", filteredUsers);
 
   useEffect(() => {
     if (isOpen) {

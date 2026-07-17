@@ -18,11 +18,11 @@ injectStore(store);
 // console.log('📦 Initial Redux Store:', store.getState());
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
         <App />
       </PersistGate>
     </Provider>
-  </React.StrictMode>
+  //</React.StrictMode>
 );
