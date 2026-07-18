@@ -119,7 +119,7 @@ export default function EditTask() {
         navigate(`/tasks/${id}`);
       }
     } catch (error) {
-      console.error('Update task error:', error);
+     // console.error('Update task error:', error);
       toast.error(error.message || 'Failed to update task');
     } finally {
       setSubmitting(false);

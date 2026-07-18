@@ -64,7 +64,7 @@ const handleTaskMove = async (taskId, fromStatus, toStatus) => {
   try {
     // ✅ Don't allow move to same status
     if (fromStatus === toStatus) {
-      console.log('⏭️ Same status, skipping...');
+      //console.log('⏭️ Same status, skipping...');
       return;
     }
 
@@ -72,7 +72,7 @@ const handleTaskMove = async (taskId, fromStatus, toStatus) => {
     const targetTasks = boardTasks[toStatus] || [];
     const position = targetTasks.length;
 
-    console.log('🔄 Moving task:', { taskId, fromStatus, toStatus, position });
+    //console.log('🔄 Moving task:', { taskId, fromStatus, toStatus, position });
 
     // ✅ Optimistic update - move task locally
     const taskToMove = boardTasks[fromStatus]?.find(t => t._id === taskId);
@@ -98,14 +98,14 @@ const handleTaskMove = async (taskId, fromStatus, toStatus) => {
       position: position,
     })).unwrap();
 
-    console.log('✅ Task moved successfully:', result);
+    //console.log('✅ Task moved successfully:', result);
     
     // ✅ Refresh board tasks
     await dispatch(fetchBoardTasks(id));
     
     toast.success('Task moved successfully!');
   } catch (error) {
-    console.error('❌ Move task error:', error);
+   // console.error('❌ Move task error:', error);
     toast.error(error.message || 'Failed to move task');
     // ✅ Refresh to fix any inconsistencies
     dispatch(fetchBoardTasks(id));

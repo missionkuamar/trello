@@ -45,15 +45,15 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // ✅ Health Check
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    status: 'ok',
-    message: 'Server is running',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-  });
-});
+// app.get('/api/health', (req, res) => {
+//   res.json({
+//     success: true,
+//     status: 'ok',
+//     message: 'Server is running',
+//     timestamp: new Date().toISOString(),
+//     uptime: process.uptime(),
+//   });
+// });
 
 // ✅ API Routes
 app.use('/api/auth', authRoutes);
@@ -61,12 +61,12 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/boards', boardRoutes);
 
 // ✅ 404 Handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-  });
-});
+// app.use((req, res) => {
+//   res.status(404).json({
+//     success: false,
+//     message: `Route ${req.originalUrl} not found`,
+//   });
+// });
 
 // // ✅ Error Handler
 // app.use((err, req, res, next) => {
@@ -94,18 +94,18 @@ app.use((req, res, next) => {
 
 // ✅ Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📂 Environment: ${process.env.NODE_ENV || 'development'}`);
+  // console.log(`🚀 Server running on http://localhost:${PORT}`);
+  // console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
+  // console.log(`📂 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 // ✅ Graceful shutdown
 process.on('SIGINT', () => {
-  console.log('🛑 Shutting down gracefully...');
+ // console.log('🛑 Shutting down gracefully...');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('🛑 Shutting down gracefully...');
+  //console.log('🛑 Shutting down gracefully...');
   process.exit(0);
 });

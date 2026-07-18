@@ -29,7 +29,7 @@ export const getBoards = async (req, res) => {
       boards,
     });
   } catch (error) {
-    console.error('❌ Get boards error:', error);
+    //console.error('❌ Get boards error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -67,7 +67,7 @@ export const getBoardById = async (req, res) => {
       board,
     });
   } catch (error) {
-    console.error('❌ Get board error:', error);
+   // console.error('❌ Get board error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -108,7 +108,7 @@ export const createBoard = async (req, res) => {
       board,
     });
   } catch (error) {
-    console.error('❌ Create board error:', error);
+   // console.error('❌ Create board error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -149,7 +149,7 @@ export const updateBoard = async (req, res) => {
       board,
     });
   } catch (error) {
-    console.error('❌ Update board error:', error);
+   // console.error('❌ Update board error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -188,7 +188,7 @@ export const deleteBoard = async (req, res) => {
       message: 'Board deleted successfully',
     });
   } catch (error) {
-    console.error('❌ Delete board error:', error);
+   // console.error('❌ Delete board error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -245,7 +245,7 @@ export const addMember = async (req, res) => {
       board,
     });
   } catch (error) {
-    console.error('❌ Add member error:', error);
+   // console.error('❌ Add member error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -283,7 +283,7 @@ export const removeMember = async (req, res) => {
       board,
     });
   } catch (error) {
-    console.error('❌ Remove member error:', error);
+    //console.error('❌ Remove member error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -331,7 +331,7 @@ export const getBoardTasks = async (req, res) => {
       columns: board.columns,
     });
   } catch (error) {
-    console.error('❌ Get board tasks error:', error);
+   // console.error('❌ Get board tasks error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 

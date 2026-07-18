@@ -26,6 +26,8 @@ import ModeratorUsers from './pages/Moderator/ModeratorUsers';
 import ModeratorReports from './pages/Moderator/ModeratorReports';
 import ModeratorCreateTask from './pages/Moderator/ModeratorCreateTask';
 import AdminStats from './pages/Admin/AdminStats';
+import MyTasks from './pages/user/MyTasks';
+import Settings from './pages/user/Settings';
 
 function App() {
   return (
@@ -41,6 +43,7 @@ function App() {
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/board" element={<ProtectedRoute><Board /></ProtectedRoute>} />
               <Route path="/board/:id" element={<ProtectedRoute><Board /></ProtectedRoute>} />
+              
               <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} /> {/* ✅ Add Tasks Route */}
               <Route path="/tasks/create" element={<ProtectedRoute><CreateTask /></ProtectedRoute>} />
               <Route path="/tasks/edit/:id" element={<ProtectedRoute><EditTask /></ProtectedRoute>} />
@@ -55,7 +58,8 @@ function App() {
 <Route path="/moderator/tasks" element={<ProtectedRoute><ModeratorTasks /></ProtectedRoute>} />
 <Route path="/moderator/users" element={<ProtectedRoute><ModeratorUsers /></ProtectedRoute>} />
 <Route path="/moderator/reports" element={<ProtectedRoute><ModeratorReports /></ProtectedRoute>} />
-
+<Route path="/my-tasks" element={<ProtectedRoute><MyTasks /></ProtectedRoute>} />
+<Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 // ✅ Add this route
 <Route path="/admin/stats" element={<ProtectedRoute adminOnly><AdminStats /></ProtectedRoute>} />
               <Route path="*" element={<Navigate to="/" replace />} />

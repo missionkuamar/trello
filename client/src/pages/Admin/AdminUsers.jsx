@@ -15,7 +15,7 @@ export default function AdminUsers() {
   }, [dispatch, search, role]);
 
   useEffect(() => {
-  console.log("AdminUsers mounted");
+  //console.log("AdminUsers mounted");
   dispatch(getAllUsers({ search, role }));
 }, []);
 

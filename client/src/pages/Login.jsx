@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser, resetLoading } from '../redux/slices/authSlice';
 import Loading from '../components/common/Loading';
+import toast from 'react-hot-toast';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,14 +13,14 @@ export default function Login() {
   const navigate = useNavigate();
 
   const { user, token, isLoading, isAuthenticated, error } = useSelector((state) => {
-    console.log('🔍 Redux State in Component:', state.auth);
+   // console.log('🔍 Redux State in Component:', state.auth);
     return state.auth;
   });
 
   // ✅ Check if login success
   useEffect(() => {
     if (isAuthenticated && user && token) {
-      console.log('✅ Login successful! Navigating to dashboard...');
+      //console.log('✅ Login successful! Navigating to dashboard...');
       navigate('/dashboard');
     }
   }, [isAuthenticated, user, token, navigate]);
@@ -31,23 +32,26 @@ export default function Login() {
     };
   }, [dispatch]);
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('🔄 Login form submitted');
+   // console.log('🔄 Login form submitted');
     
     try {
       const result = await dispatch(loginUser({ email, password }));
-      console.log('📤 Dispatch Result:', result);
+     // console.log('📤 Dispatch Result:', result);
       
       // ✅ Check if login successful
       if (result.payload?.token) {
-        console.log('✅ Token received:', result.payload.token);
+       // console.log('✅ Token received:', result.payload.token);
         navigate('/dashboard');
       } else {
-        console.log('❌ No token in response');
+      //  console.log('❌ No token in response');
+      toast.error(error.message || 'Failed to update task');
       }
     } catch (error) {
-      console.error('❌ Login error:', error);
+     // console.error('❌ Login error:', error);
+     toast.error(error.message || 'Failed to update task');
     }
   };
 

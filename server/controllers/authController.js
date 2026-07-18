@@ -55,7 +55,7 @@ export const register = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error('❌ Register error:', error);
+   // console.error('❌ Register error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -67,7 +67,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-console.log("email :", email, "password:", password);
+//console.log("email :", email, "password:", password);
     // Validate
     if (!email || !password) {
       return res.status(400).json({ 
@@ -111,7 +111,7 @@ console.log("email :", email, "password:", password);
       token,
     });
   } catch (error) {
-    console.error('❌ Login error:', error);
+    //console.error('❌ Login error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -134,7 +134,7 @@ export const getCurrentUser = async (req, res) => {
       user 
     });
   } catch (error) {
-    console.error('❌ Get user error:', error);
+  //  console.error('❌ Get user error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -176,7 +176,7 @@ export const updateProfile = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.error('❌ Update profile error:', error);
+   // console.error('❌ Update profile error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -235,7 +235,7 @@ export const uploadAvatar = async (req, res) => {
       avatar: user.avatar,
     });
   } catch (error) {
-    console.error('❌ Upload avatar error:', error);
+    //console.error('❌ Upload avatar error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -287,7 +287,7 @@ export const changePassword = async (req, res) => {
       message: 'Password changed successfully',
     });
   } catch (error) {
-    console.error('❌ Change password error:', error);
+  //  console.error('❌ Change password error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -352,7 +352,7 @@ export const getAllUsers = async (req, res) => {
       totalPages: Math.ceil(total / Number(limit)),
     });
   } catch (error) {
-    console.error("❌ Get users error:", error);
+    //console.error("❌ Get users error:", error);
 
     return res.status(500).json({
       success: false,
@@ -399,7 +399,7 @@ export const updateUserRole = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.error('❌ Update user role error:', error);
+    //console.error('❌ Update user role error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -437,7 +437,7 @@ export const toggleUserStatus = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.error('❌ Toggle user status error:', error);
+    //console.error('❌ Toggle user status error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 
@@ -470,7 +470,7 @@ export const deleteUser = async (req, res) => {
       message: 'User deleted successfully',
     });
   } catch (error) {
-    console.error('❌ Delete user error:', error);
+   // console.error('❌ Delete user error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 

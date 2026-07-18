@@ -6,6 +6,7 @@ import { fetchTasksByStatus, updateTaskPosition, updateTask } from '../../redux/
 import Column from './Column';
 import TaskModal from './TaskModal';
 import Loading from '../common/Loading';
+import toast from 'react-hot-toast';
 
 const COLUMNS = [
   { id: 'todo', title: 'To Do', icon: '📋' },
@@ -67,7 +68,8 @@ export default function Board() {
         body: JSON.stringify({ taskId, status: toStatus, position: toIndex }),
       });
     } catch (error) {
-      console.error('Failed to update task position:', error);
+     // console.error('Failed to update task position:', error);
+    toast.error(error.message || 'Failed to update task');
     }
   };
 

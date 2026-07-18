@@ -47,6 +47,7 @@ export const fetchTaskById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await taskAPI.getById(id);
+     // console.log(response)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data);
@@ -83,7 +84,7 @@ export const updateTaskPosition = createAsyncThunk(
   'tasks/updatePosition',
   async ({ taskId, status, position }, { rejectWithValue }) => {
     try {
-      console.log('📦 updateTaskPosition called:', { taskId, status, position });
+     // console.log('📦 updateTaskPosition called:', { taskId, status, position });
       
       // ✅ Make sure we're sending the right data
       const payload = {
@@ -95,8 +96,8 @@ export const updateTaskPosition = createAsyncThunk(
       const response = await taskAPI.updatePosition(payload);
       return response.data;
     } catch (error) {
-      console.error('❌ updateTaskPosition error:', error);
-      console.error('❌ Error response:', error.response?.data);
+    //  console.error('❌ updateTaskPosition error:', error);
+     // console.error('❌ Error response:', error.response?.data);
       return rejectWithValue(error.response?.data || { message: error.message });
     }
   }

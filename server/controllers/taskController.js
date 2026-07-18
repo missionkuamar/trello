@@ -200,7 +200,7 @@ export const createTask = async (req, res) => {
       task: populatedTask,
     });
   } catch (error) {
-    console.error("❌ Create task error:", error);
+    //console.error("❌ Create task error:", error);
 
     return res.status(500).json({
       success: false,
@@ -252,7 +252,7 @@ export const updateTaskPosition = async (req, res) => {
   try {
     const { taskId, status, position } = req.body;
     
-    console.log('📦 Updating task position:', { taskId, status, position });
+    //console.log('📦 Updating task position:', { taskId, status, position });
 
     // ✅ Validate inputs
     if (!taskId || !status) {
@@ -296,7 +296,7 @@ export const updateTaskPosition = async (req, res) => {
       task: updatedTask,
     });
   } catch (error) {
-    console.error('❌ Update position error:', error);
+   // console.error('❌ Update position error:', error);
     res.status(500).json({
       success: false,
       message: error.message || 'Internal server error'
@@ -376,7 +376,7 @@ export const uploadAttachment = async (req, res) => {
       task: task,
     });
   } catch (error) {
-    console.error('❌ Upload attachment error:', error);
+   // console.error('❌ Upload attachment error:', error);
     res.status(500).json({ 
       success: false, 
       message: error.message || 'Internal server error' 

@@ -5,7 +5,7 @@ export default function Column({ column, tasks, onTaskMove, onTaskClick }) {
   const [{ isOver }, drop] = useDrop({
     accept: 'TASK',
     drop: (item) => {
-      console.log('📦 Dropped:', item, 'to:', column.id);
+     // console.log('📦 Dropped:', item, 'to:', column.id);
       // ✅ Only move if status is different
       if (item.status !== column.id) {
         onTaskMove(item.id, item.status, column.id);

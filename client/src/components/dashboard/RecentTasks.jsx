@@ -50,7 +50,7 @@ export default function RecentTasks({ tasks, limit = 5 }) {
         setIsModalOpen(true);
       }
     } catch (error) {
-      console.error('Error fetching task:', error);
+     // console.error('Error fetching task:', error);
       toast.error('Failed to load task details');
     } finally {
       setLoading(false);

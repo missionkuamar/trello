@@ -5,11 +5,12 @@ let store;
 
 export const injectStore = (_store) => {
   store = _store;
-  console.log("✅ Store injected into axios");
+ // console.log("✅ Store injected into axios");
 };
 
+const API_BASE_URL = import.meta.env.VITE_API_URL_API || "http://localhost:5000/api";
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,17 +31,17 @@ api.interceptors.request.use(
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log("✅ Token Added");
+     // console.log("✅ Token Added");
     } else {
      // console.log("⚠️ No Token");
     }
 
-    console.groupEnd();
+  //  console.groupEnd();
 
     return config;
   },
   (error) => {
-    console.error("❌ Request Error", error);
+    //console.error("❌ Request Error", error);
     return Promise.reject(error);
   }
 );
@@ -58,7 +59,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.group("❌ API ERROR");
+   // console.group("❌ API ERROR");
 
     if (error.response) {
       // console.log("Status :", error.response.status);
@@ -68,7 +69,7 @@ api.interceptors.response.use(
       // console.log("No Response From Backend");
       // console.log(error.request);
     } else {
-      console.log("Axios Error :", error.message);
+    //  console.log("Axios Error :", error.message);
     }
 
     // console.groupEnd();

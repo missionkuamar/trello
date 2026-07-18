@@ -17,7 +17,7 @@ export const verifyToken = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error('❌ Token verification error:', error);
+  //  console.error('❌ Token verification error:', error);
     
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({ 
@@ -132,7 +132,7 @@ export const isOwner = (model) => {
         message: 'Forbidden - You do not own this resource' 
       });
     } catch (error) {
-      console.error('❌ Owner check error:', error);
+     // console.error('❌ Owner check error:', error);
       return res.status(500).json({ 
         success: false, 
         message: 'Internal server error' 
@@ -161,7 +161,7 @@ export const isActive = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('❌ Active check error:', error);
+   // console.error('❌ Active check error:', error);
     return res.status(500).json({ 
       success: false, 
       message: 'Internal server error' 

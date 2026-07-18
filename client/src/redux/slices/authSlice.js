@@ -17,7 +17,7 @@ export const registerUser = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await authAPI.register(data);
-      console.log('📝 Register response:', response.data);
+      //console.log('📝 Register response:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: 'Registration failed' });
@@ -30,7 +30,7 @@ export const loginUser = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await authAPI.login(data);
-      console.log('🔵 API Response:', response.data);
+     // console.log('🔵 API Response:', response.data);
       
       // ✅ Check response structure
       if (!response.data || !response.data.token) {
@@ -39,7 +39,7 @@ export const loginUser = createAsyncThunk(
       
       return response.data;
     } catch (error) {
-      console.error('❌ Login Error:', error);
+    //  console.error('❌ Login Error:', error);
       return rejectWithValue(error.response?.data || { message: 'Login failed' });
     }
   }
@@ -98,7 +98,7 @@ export const getAllUsers = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await authAPI.getAllUsers(params);
-      console.log(response)
+     // console.log(response)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data);
@@ -177,7 +177,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        console.log('✅ Register fulfilled:', action.payload);
+        //console.log('✅ Register fulfilled:', action.payload);
         state.isLoading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
@@ -186,7 +186,7 @@ const authSlice = createSlice({
         toast.success('Registration successful!');
       })
       .addCase(registerUser.rejected, (state, action) => {
-        console.log('❌ Register rejected:', action.payload);
+       // console.log('❌ Register rejected:', action.payload);
         state.isLoading = false;
         state.error = action.payload?.message || 'Registration failed';
         state.isAuthenticated = false;
@@ -195,13 +195,13 @@ const authSlice = createSlice({
 
       // ============ LOGIN ============
       .addCase(loginUser.pending, (state) => {
-        console.log('⏳ Login Pending...');
+       // console.log('⏳ Login Pending...');
         state.isLoading = true;
         state.error = null;
         state.isAuthenticated = false; // ✅ Reset during login
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log('✅ Login Fulfilled - Payload:', action.payload);
+        //console.log('✅ Login Fulfilled - Payload:', action.payload);
         
         // ✅ IMPORTANT: Properly update state
         state.isLoading = false;
@@ -210,17 +210,17 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.error = null;
         
-        console.log('📊 Updated State:', {
-          user: state.user?.name || state.user?.email || 'User',
-          token: state.token?.substring(0, 20) + '...',
-          isAuthenticated: state.isAuthenticated,
-          isLoading: state.isLoading
-        });
+      ///  console.log('📊 Updated State:', {
+        //   user: state.user?.name || state.user?.email || 'User',
+        //   token: state.token?.substring(0, 20) + '...',
+        //   isAuthenticated: state.isAuthenticated,
+        //   isLoading: state.isLoading
+        // });
         
         toast.success('Login successful!');
       })
       .addCase(loginUser.rejected, (state, action) => {
-        console.log('❌ Login Rejected:', action.payload);
+       // console.log('❌ Login Rejected:', action.payload);
         state.isLoading = false;
         state.user = null;
         state.token = null;
@@ -234,14 +234,14 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
-        console.log('✅ Get current user fulfilled:', action.payload);
+       // console.log('✅ Get current user fulfilled:', action.payload);
         state.isLoading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.error = null;
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
-        console.log('❌ Get current user rejected:', action.payload);
+      //  console.log('❌ Get current user rejected:', action.payload);
         state.isLoading = false;
         state.user = null;
         state.token = null;
@@ -275,13 +275,13 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(getAllUsers.fulfilled, (state, action) => {
-        console.log('✅ Get all users fulfilled:', action.payload);
+      //  console.log('✅ Get all users fulfilled:', action.payload);
         state.isLoading = false;
         state.users = action.payload?.users || [];
         state.error = null;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
-        console.log('❌ Get all users rejected:', action.payload);
+       // console.log('❌ Get all users rejected:', action.payload);
         state.isLoading = false;
         state.users = [];
         state.error = action.payload?.message || 'Failed to fetch users';
