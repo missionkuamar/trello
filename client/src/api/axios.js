@@ -8,10 +8,10 @@ export const injectStore = (_store) => {
 };
 
 // Use relative URL for production, absolute for development
-const API_BASE_URL = import.meta.env.PROD 
-  ? '/api'  // In production, use relative path
-  : 'http://localhost:5000/api';
-
+// const API_BASE_URL = import.meta.env.PROD 
+//   ? '/api'  // In production, use relative path
+//   : 'http://localhost:5000/api';
+const API_BASE_URL = 'https://trello-rnih.onrender.com/api'
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
