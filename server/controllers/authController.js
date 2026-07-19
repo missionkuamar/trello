@@ -102,14 +102,25 @@ export const login = async (req, res) => {
       });
     }
 
+    console.log("===== LOGIN START =====");
+    
     const token = generateToken(user);
 
+    console.log("Login API Hit");
+console.log("Before response");
+
+
+console.log({
+  success: true,
+  token,
+});
     res.json({
       success: true,
       message: 'Login successful',
       user,
       token,
     });
+    console.log("After response");
   } catch (error) {
     //console.error('❌ Login error:', error);
     res.status(500).json({ 
