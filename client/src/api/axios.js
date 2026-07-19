@@ -24,24 +24,24 @@ api.interceptors.request.use(
     const state = store?.getState();
     const token = state?.auth?.token;
 
-    // console.group("🚀 API REQUEST");
-    // console.log("Method :", config.method?.toUpperCase());
-    // console.log("URL :", config.baseURL + config.url);
-    // console.log("Data :", config.data);
+    console.group("🚀 API REQUEST");
+    console.log("Method :", config.method?.toUpperCase());
+    console.log("URL :", config.baseURL + config.url);
+    console.log("Data :", config.data);
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-     // console.log("✅ Token Added");
+      console.log("✅ Token Added");
     } else {
      // console.log("⚠️ No Token");
     }
 
-  //  console.groupEnd();
+    console.groupEnd();
 
     return config;
   },
   (error) => {
-    //console.error("❌ Request Error", error);
+    console.error("❌ Request Error", error);
     return Promise.reject(error);
   }
 );
@@ -50,21 +50,21 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    // console.group("✅ API RESPONSE");
-    // console.log("URL :", response.config.url);
-    // console.log("Status :", response.status);
-    // console.log("Data :", response.data);
-    // console.groupEnd();
+    console.group("✅ API RESPONSE");
+    console.log("URL :", response.config.url);
+    console.log("Status :", response.status);
+    console.log("Data :", response.data);
+    console.groupEnd();
 
     return response;
   },
   (error) => {
-   // console.group("❌ API ERROR");
+    console.group("❌ API ERROR");
 
     if (error.response) {
-      // console.log("Status :", error.response.status);
-      // console.log("Data :", error.response.data);
-      // console.log("Headers :", error.response.headers);
+      console.log("Status :", error.response.status);
+      console.log("Data :", error.response.data);
+      console.log("Headers :", error.response.headers);
     } else if (error.request) {
       // console.log("No Response From Backend");
       // console.log(error.request);
