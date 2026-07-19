@@ -68,8 +68,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ✅ Serve static files - THIS SHOULD COME AFTER API ROUTES
-// Serve static files from the 'client/dist' folder
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
 app.get("*", (req, res) => {
