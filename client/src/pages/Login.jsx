@@ -35,11 +35,11 @@ export default function Login() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-   // console.log('🔄 Login form submitted');
+    console.log('🔄 Login form submitted');
     
     try {
       const result = await dispatch(loginUser({ email, password }));
-     // console.log('📤 Dispatch Result:', result);
+      console.log('📤 Dispatch Result:', result);
       
       // ✅ Check if login successful
       if (result.payload?.token) {
