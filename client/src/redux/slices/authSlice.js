@@ -30,7 +30,7 @@ export const loginUser = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await authAPI.login(data);
-      console.log('🔵 API Response:', response);
+      console.log('🔵 API Response: of loginuser', response);
       
       // ✅ Check response structure
       if (!response.data || !response.data.token) {
