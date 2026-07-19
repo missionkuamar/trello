@@ -69,34 +69,34 @@ app.get('/api/health', (req, res) => {
 });
 
 // ✅ Serve static files - THIS SHOULD COME AFTER API ROUTES
-app.use(express.static(path.join(__dirname, 'client', 'dist')));
+// Serve static files from the 'client/dist' folder
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// ✅ Catch-all route to serve index.html - THIS SHOULD BE LAST
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
 // ✅ 404 Handler for API routes only
-app.use('/api/*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-  });
-});
+// app.use('/api/*', (req, res) => {
+//   res.status(404).json({
+//     success: false,
+//     message: `Route ${req.originalUrl} not found`,
+//   });
+// });
 
 // ✅ Error Handler
-app.use((err, req, res, next) => {
-  console.error('❌ Error:', err.stack);
+// app.use((err, req, res, next) => {
+//   console.error('❌ Error:', err.stack);
   
-  const status = err.status || 500;
-  const message = err.message || 'Internal server error';
+//   const status = err.status || 500;
+//   const message = err.message || 'Internal server error';
   
-  res.status(status).json({
-    success: false,
-    message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-  });
-});
+//   res.status(status).json({
+//     success: false,
+//     message,
+//     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+//   });
+// });
 
 // ✅ Start Server
 app.listen(PORT, () => {
