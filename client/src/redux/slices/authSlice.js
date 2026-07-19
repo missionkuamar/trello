@@ -3,14 +3,6 @@ import { authAPI } from '../../api/auth';
 import toast from 'react-hot-toast';
 
 // ============ INITIAL STATE ============
-const initialState = {
-  user: null,
-  token: null,
-  isLoading: false,
-  error: null,
-  isAuthenticated: false,
-  users: [],
-};
 
 export const registerUser = createAsyncThunk(
   'auth/register',
@@ -25,25 +17,25 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const loginUser = createAsyncThunk(
-  'auth/login',
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await authAPI.login(data);
-      console.log('🔵 API Response: of loginuser', response);
+// export const loginUser = createAsyncThunk(
+//   'auth/login',
+//   async (credentials, { rejectWithValue }) => {
+//     try {
+//       const result = await authSevice.login(credentials);
+//       console.log('🔵 API Response: of loginuser', result);
       
-      // ✅ Check response structure
-      if (!response.data || !response.data.token) {
-        throw new Error('Invalid response from server');
-      }
+//       // ✅ Check response structure
+//       if (!result.success) {
+//         return rejectWithValue(result.error);
+//       }
       
-      return response.data;
-    } catch (error) {
-    //  console.error('❌ Login Error:', error);
-      return rejectWithValue(error.response?.data || { message: 'Login failed' });
-    }
-  }
-);
+//       return result.data;
+//     } catch (error) {
+//     //  console.error('❌ Login Error:', error);
+//       return rejectWithValue(error.response?.data || { message: 'Login failed' });
+//     }
+//   }
+// );
 
 export const getCurrentUser = createAsyncThunk(
   'auth/me',
@@ -144,7 +136,14 @@ export const deleteUser = createAsyncThunk(
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState:{
+user: null,
+  token: null,
+  isLoading: false,
+  error: null,
+  isAuthenticated: false,
+  users: [],
+  },
   reducers: {
     logout: (state) => {
        state.user = null;
@@ -185,49 +184,49 @@ const authSlice = createSlice({
         state.error = null;
         toast.success('Registration successful!');
       })
-      .addCase(registerUser.rejected, (state, action) => {
-       // console.log('❌ Register rejected:', action.payload);
-        state.isLoading = false;
-        state.error = action.payload?.message || 'Registration failed';
-        state.isAuthenticated = false;
-        toast.error(state.error);
-      })
+      // .addCase(registerUser.rejected, (state, action) => {
+      //  // console.log('❌ Register rejected:', action.payload);
+      //   state.isLoading = false;
+      //   state.error = action.payload?.message || 'Registration failed';
+      //   state.isAuthenticated = false;
+      //   toast.error(state.error);
+      // })
 
       // ============ LOGIN ============
-      .addCase(loginUser.pending, (state) => {
-       // console.log('⏳ Login Pending...');
-        state.isLoading = true;
-        state.error = null;
-        state.isAuthenticated = false; // ✅ Reset during login
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        //console.log('✅ Login Fulfilled - Payload:', action.payload);
+      // .addCase(loginUser.pending, (state) => {
+      //  // console.log('⏳ Login Pending...');
+      //   state.isLoading = true;
+      //   state.error = null;
+      //   state.isAuthenticated = false; // ✅ Reset during login
+      // })
+      // .addCase(loginUser.fulfilled, (state, action) => {
+      //   //console.log('✅ Login Fulfilled - Payload:', action.payload);
         
-        // ✅ IMPORTANT: Properly update state
-        state.isLoading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-        state.error = null;
+      //   // ✅ IMPORTANT: Properly update state
+      //   state.isLoading = false;
+      //   state.user = action.payload.user;
+      //   state.token = action.payload.token;
+      //   state.isAuthenticated = true;
+      //   state.error = null;
         
-      ///  console.log('📊 Updated State:', {
-        //   user: state.user?.name || state.user?.email || 'User',
-        //   token: state.token?.substring(0, 20) + '...',
-        //   isAuthenticated: state.isAuthenticated,
-        //   isLoading: state.isLoading
-        // });
+      // ///  console.log('📊 Updated State:', {
+      //   //   user: state.user?.name || state.user?.email || 'User',
+      //   //   token: state.token?.substring(0, 20) + '...',
+      //   //   isAuthenticated: state.isAuthenticated,
+      //   //   isLoading: state.isLoading
+      //   // });
         
-        toast.success('Login successful!');
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-       // console.log('❌ Login Rejected:', action.payload);
-        state.isLoading = false;
-        state.user = null;
-        state.token = null;
-        state.isAuthenticated = false;
-        state.error = action.payload?.message || 'Login failed';
-        toast.error(state.error);
-      })
+      //   toast.success('Login successful!');
+      // })
+      // .addCase(loginUser.rejected, (state, action) => {
+      //  // console.log('❌ Login Rejected:', action.payload);
+      //   state.isLoading = false;
+      //   state.user = null;
+      //   state.token = null;
+      //   state.isAuthenticated = false;
+      //   state.error = action.payload?.message || 'Login failed';
+      //   toast.error(state.error);
+      // })
 
        // ============ GET CURRENT USER ============
       .addCase(getCurrentUser.pending, (state) => {
